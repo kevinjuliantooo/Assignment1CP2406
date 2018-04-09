@@ -2,15 +2,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class main {
 
 
 	private static String userPassword;
-	private static StringBuilder sb;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -61,14 +59,15 @@ public class main {
 		System.out.println("Hello admin");
 		while (true){
 			System.out.println("1. See Income\t2. Add Menu\n3. Delete Menu\t4. Back Menu");
-			int adminChoose = scanOption.nextInt();
-			switch (adminChoose) {
-				case 1: incomeData(); break;
-				case 2: addMenu(scanOption); break;
-				case 3: deleteMenu(scanOption); break;
-				case 4: main();
-			
-		}
+			String adminChoose = scanOption.next();
+            switch (adminChoose) {
+                case "1": incomeData(); break;
+                case "2": addMenu(scanOption); break;
+                case "3": deleteMenu(scanOption); break;
+                case "4": main(); break;
+                default:
+                    System.out.println("You enter the wrong thing, try again...");
+            }
 		}
 	}
 
@@ -103,10 +102,10 @@ public class main {
 
 		}
 		System.out.println("\nDrinks");
-		int menuNo = 0;
+		int drinkNo = 0;
 		for (List<String> i : menuList) {
-			System.out.println(menuList.get(menuNo).get(0) + menuNo + "\t\t" + menuList.get(menuNo).get(1) + "\t\t $" + menuList.get(menuNo).get(2));
-            menuNo++;
+			System.out.println(menuList.get(drinkNo).get(0) + drinkNo + "\t\t" + menuList.get(drinkNo).get(1) + "\t\t $" + menuList.get(drinkNo).get(2));
+			drinkNo++;
 		}
 		System.out.print("Choose the code menu you want to delete: ");
 		int deleteChoose = scanOption.nextInt();
@@ -141,6 +140,7 @@ public class main {
 	private static void addMenu(Scanner scanOption) {
 		// TODO Auto-generated method stub
 		FileWriter pw;
+		StringBuilder sb;
 		try {
 			pw = new FileWriter("doc/data.csv",true);
 			sb = new StringBuilder();
@@ -159,21 +159,27 @@ public class main {
 			String menuName = scanOption.next();
 			pw.append(menuName);
 	        pw.append(',');
+
+
+
 			while (true) {
-				try {
-					System.out.print("Enter the " + menuName + " Price: $");
-					Double menuPrice = scanOption.nextDouble();
-					pw.append(menuPrice.toString());
-					break;
-				} catch (InputMismatchException e) {
-					System.out.print("In number please");
-					
+                DecimalFormat format = new DecimalFormat("0.#");
+                System.out.print("Enter the " + menuName + " Price: $");
+                Double menuPrice = scanOption.nextDouble();
+                if (menuPrice < 0){
+                    System.out.println("Price can not below than 0");
+                } else {
+                    String newMenuPrice = format.format(menuPrice).toString();
+                    pw.append(newMenuPrice);
+                    pw.append('\n');
+                    break;
+                }
 				}
-			}
-			pw.append('\n');
+            pw.flush();
+            pw.close();
+
 	        System.out.println("Menu Added");
-			pw.flush();
-			pw.close();
+
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -332,6 +338,7 @@ public class main {
 	private static void receipt(List<List<String>> customerList, double totalPrice) {
 		// TODO Auto-generated method stub
 		FileWriter pw;
+        StringBuilder sb;
 		try {
 			pw = new FileWriter("doc/income.csv",true);
 			sb = new StringBuilder();
@@ -356,14 +363,7 @@ public class main {
 			e1.printStackTrace();
 		}
 		main();
-
-		
-		
 		}
-		
-		
-
-
 }
 	
 	
